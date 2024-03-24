@@ -40,84 +40,98 @@ void matrix_vector_product(double* a, double* b, double* c, int m, int n)
     }
 }
 
-double run_serial(int m, int n)
+double run_serial(double* a, double* b, double* c, int m, int n)
 {
-    double *a, *b, *c;
-    a = malloc(sizeof(*a) * m * n);
-    b = malloc(sizeof(*b) * n);
-    c = malloc(sizeof(*c) * m);
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++)
-            a[i * n + j] = i + j;
-    }
-    for (int j = 0; j < n; j++)
-        b[j] = j;
     double t = wtime();
     matrix_vector_product(a, b, c, m, n);
     t = wtime() - t;
     printf("%d x %d elements\n", m, n);
     printf("Elapsed time (serial): %.6f sec.\n", t);
-    free(a);
-    free(b);
-    free(c);
     return t;
 }
 
-double run_parallel(int m, int n, int n_threads)
+double
+run_parallel(double* a, double* b, double* c, int m, int n, int n_threads)
 {
-    double *a, *b, *c;
-    // Allocate memory for 2-d array a[m, n]
-    a = malloc(sizeof(*a) * m * n);
-    b = malloc(sizeof(*b) * n);
-    c = malloc(sizeof(*c) * m);
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++)
-            a[i * n + j] = i + j;
-    }
-    for (int j = 0; j < n; j++)
-        b[j] = j;
     double t = wtime();
     matrix_vector_product_omp(a, b, c, m, n, n_threads);
     t = wtime() - t;
     printf("Elapsed time (parallel: %d threads): %.6f sec.\n", n_threads, t);
-    free(a);
-    free(b);
-    free(c);
     return t;
 }
 
 int main(int argc, char** argv)
 {
     int n[] = {15000, 20000, 25000};
+    double *a, *b, *c;
     double t[N_LOGICAL_CORES + 1];
     FILE* file;
 
-    t[1] = run_serial(n[0], n[0]);
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2)
-        t[i] = run_parallel(n[0], n[0], i);
+    a = malloc(sizeof(*a) * n[0] * n[0]);
+    b = malloc(sizeof(*b) * n[0]);
+    c = malloc(sizeof(*c) * n[0]);
+    for (int i = 0; i < n[0]; i++) {
+        for (int j = 0; j < n[0]; j++)
+            a[i * n[0] + j] = i + j;
+    }
+    for (int j = 0; j < n[0]; j++)
+        b[j] = j;
+
+    t[1] = run_serial(a, b, c, n[0], n[0]);
+    for (int i = 2; i <= N_LOGICAL_CORES; i++)
+        t[i] = run_parallel(a, b, c, n[0], n[0], i);
     file = fopen("15000.dat", "w");
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2) {
+    for (int i = 2; i <= N_LOGICAL_CORES; i++) {
         fprintf(file, "%d    %f\n", i, t[1] / t[i]);
     }
     fclose(file);
+    free(a);
+    free(b);
+    free(c);
 
-    t[1] = run_serial(n[1], n[1]);
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2)
-        t[i] = run_parallel(n[1], n[1], i);
+    a = malloc(sizeof(*a) * n[1] * n[1]);
+    b = malloc(sizeof(*b) * n[1]);
+    c = malloc(sizeof(*c) * n[1]);
+    for (int i = 0; i < n[1]; i++) {
+        for (int j = 0; j < n[1]; j++)
+            a[i * n[1] + j] = i + j;
+    }
+    for (int j = 0; j < n[1]; j++)
+        b[j] = j;
+
+    t[1] = run_serial(a, b, c, n[1], n[1]);
+    for (int i = 2; i <= N_LOGICAL_CORES; i++)
+        t[i] = run_parallel(a, b, c, n[1], n[1], i);
     file = fopen("20000.dat", "w");
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2) {
+    for (int i = 2; i <= N_LOGICAL_CORES; i++) {
         fprintf(file, "%d    %f\n", i, t[1] / t[i]);
     }
     fclose(file);
+    free(a);
+    free(b);
+    free(c);
 
-    t[1] = run_serial(n[2], n[2]);
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2)
-        t[i] = run_parallel(n[2], n[2], i);
+    a = malloc(sizeof(*a) * n[2] * n[2]);
+    b = malloc(sizeof(*b) * n[2]);
+    c = malloc(sizeof(*c) * n[2]);
+    for (int i = 0; i < n[2]; i++) {
+        for (int j = 0; j < n[2]; j++)
+            a[i * n[2] + j] = i + j;
+    }
+    for (int j = 0; j < n[2]; j++)
+        b[j] = j;
+
+    t[1] = run_serial(a, b, c, n[2], n[2]);
+    for (int i = 2; i <= N_LOGICAL_CORES; i++)
+        t[i] = run_parallel(a, b, c, n[2], n[2], i);
     file = fopen("25000.dat", "w");
-    for (int i = 2; i <= N_LOGICAL_CORES; i += 2) {
+    for (int i = 2; i <= N_LOGICAL_CORES; i++) {
         fprintf(file, "%d    %f\n", i, t[1] / t[i]);
     }
     fclose(file);
+    free(a);
+    free(b);
+    free(c);
 
     return 0;
 }
