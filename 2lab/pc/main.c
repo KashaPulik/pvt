@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     free(a);
     free(b);
     free(c);
-
+    
     a = malloc(sizeof(*a) * n[2] * n[2]);
     b = malloc(sizeof(*b) * n[2]);
     c = malloc(sizeof(*c) * n[2]);
