@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define N_LOGICAL_CORES 24
+#define N_LOGICAL_CORES 8
 #define EPS 1e-5
 #define N_CUTS 100000000
 
