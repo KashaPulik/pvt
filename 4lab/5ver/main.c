@@ -223,13 +223,13 @@ int main(int argc, char* argv[])
     FILE* file;
 
     t[1] = nbody_serial(n);
-    printf("1 thread: %f seconds\n", t[1]);
-    for (int i = 2; i <= N_LOGICAL_CORES; i++) {
+    printf("%d threads: %f seconds\n", 1, t[1]);
+    for (int i = 2; i <= N_LOGICAL_CORES; i += 2) {
         t[i] = nbody_parallel(n, i);
         printf("%d threads: %f seconds\n", i, t[i]);
     }
     file = fopen("data.dat", "w");
-    for (int i = 2; i <= N_LOGICAL_CORES; i++) {
+    for (int i = 2; i <= N_LOGICAL_CORES; i += 2) {
         fprintf(file, "%d    %f\n", i, t[1] / t[i]);
     }
     fclose(file);

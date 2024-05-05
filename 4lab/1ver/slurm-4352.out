@@ -1,0 +1,5 @@
+1 threads: 1.001694 seconds
+2 threads: 1.458802 seconds
+4 threads: 1.486196 seconds
+6 threads: 1.463555 seconds
+8 threads: 1.614093 seconds
