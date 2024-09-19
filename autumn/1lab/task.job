@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --nodes=2 --ntasks-per-node=1
+#SBATCH --nodes=1 --ntasks-per-node=4
 #SBATCH --job-name=MyTask
 
 cd $SLURM_SUBMIT_DIR
