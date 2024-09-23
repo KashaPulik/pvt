@@ -1,7 +1,7 @@
 #!/bin/sh
-#SBATCH --nodes=1 --ntasks-per-node=4
+#SBATCH --nodes=2 --ntasks-per-node=2
 #SBATCH --job-name=MyTask
 
 cd $SLURM_SUBMIT_DIR
 
-mpiexec ./app
+mpiexec ./ring
