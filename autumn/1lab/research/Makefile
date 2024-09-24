@@ -13,4 +13,4 @@ alltoall: alltoall.c
 	mpicc -Wall -o alltoall alltoall.c
 
 clean:
-	rm -rf ring broadcast gather alltoall slurm* *.txt
+	rm -rf ring broadcast gather alltoall slurm*
