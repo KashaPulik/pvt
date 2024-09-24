@@ -1,1 +1,4 @@
 ring
+broadcast
+gather
+alltoall
