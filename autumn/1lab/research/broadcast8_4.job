@@ -1,0 +1,7 @@
+#!/bin/sh
+#SBATCH --nodes=8 --ntasks-per-node=4
+#SBATCH --job-name=broadcast8_4
+
+cd $SLURM_SUBMIT_DIR
+
+mpiexec ./broadcast

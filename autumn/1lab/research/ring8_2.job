@@ -1,0 +1,7 @@
+#!/bin/sh
+#SBATCH --nodes=8 --ntasks-per-node=2
+#SBATCH --job-name=ring8_2
+
+cd $SLURM_SUBMIT_DIR
+
+mpiexec ./ring
