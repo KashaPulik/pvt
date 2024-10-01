@@ -33,6 +33,9 @@ int main(int argc, char** argv)
     int rank, commsize;
     char *sbuf = malloc(size), *rbuf = NULL;
 
+    if (!sbuf)
+        return 1;
+
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -43,9 +46,11 @@ int main(int argc, char** argv)
     if (rank == 0)
         file = fopen(filename, "a");
 
-    if (rank == 0)
+    if (rank == 0) {
         rbuf = malloc(size * commsize);
-
+        if (!rbuf)
+            return 1;
+    }
     double t;
 
     t = make_gather(rank, commsize, sbuf, rbuf, 1024);

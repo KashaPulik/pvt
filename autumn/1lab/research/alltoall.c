@@ -45,6 +45,9 @@ int main(int argc, char** argv)
     sbuf = malloc(size);
     rbuf = malloc(size * commsize);
 
+    if (!sbuf || !rbuf)
+        return 1;
+
     char filename[1024];
     sprintf(filename, "alltoall_result_%d_proc.txt", commsize);
     FILE* file;

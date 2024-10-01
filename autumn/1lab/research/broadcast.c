@@ -30,6 +30,9 @@ int main(int argc, char** argv)
     char* sbuf = malloc(size);
     char* rbuf = malloc(size);
 
+    if (!sbuf || !rbuf)
+        return 1;
+
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
