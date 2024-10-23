@@ -22,6 +22,8 @@ speedup = [initial_time / t * 4 for t in times]
 # Построение графика
 plt.figure(figsize=(10, 6))
 plt.plot(processes, speedup, marker='o', linestyle='-', color='b', label="Ускорение")
+plt.plot(range(2,30),range(2,30),'-',c="blue",linewidth=0.5,label="Linear speedup")
+
 
 # Подписи осей
 plt.xlabel('Количество процессов')
