@@ -28,12 +28,11 @@ plt.plot(processes, speedup1, marker='o', linestyle='-', color='b', label="28000
 
 plt.plot(processes, speedup2, marker='s', linestyle='--', color='r', label="45000")
 
-plt.plot(range(2,32),range(2,32),'-',c="blue",linewidth=0.5,label="Linear speedup")
+plt.plot(range(1,32),range(1,32),'-',c="blue",linewidth=0.5,label="Linear speedup")
 
 
 plt.xlabel('Number of process')
 plt.ylabel('speedup')
-# plt.title('Графики строгой масштабируемости')
 
 plt.grid(True)
 plt.legend()

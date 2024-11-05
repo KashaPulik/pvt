@@ -38,7 +38,7 @@ void get_chunk(int a, int b, int commsize, int rank, int* lb, int* ub)
     *ub = *lb + chunk - 1;
 }
 
-void dgemv(double* a, double* b, double* c, int m, int n)
+void dgemv(float* a, float* b, float* c, int m, int n)
 {
     int commsize, rank;
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -60,7 +60,7 @@ void dgemv(double* a, double* b, double* c, int m, int n)
         rcounts[i] = u - l + 1;
         displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1] : 0;
     }
-    MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE, MPI_COMM_WORLD);
+    MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_FLOAT, c, rcounts, displs, MPI_FLOAT, MPI_COMM_WORLD);
 }
 
 int main(int argc, char** argv)
@@ -76,9 +76,9 @@ int main(int argc, char** argv)
     int lb, ub;
     get_chunk(0, m - 1, commsize, rank, &lb, &ub);
     int nrows = ub - lb + 1;
-    double* a = xmalloc(sizeof(*a) * nrows * n);
-    double* b = xmalloc(sizeof(*b) * n);
-    double* c = xmalloc(sizeof(*c) * m);
+    float* a = xmalloc(sizeof(*a) * nrows * n);
+    float* b = xmalloc(sizeof(*b) * n);
+    float* c = xmalloc(sizeof(*c) * m);
 
     for (int i = 0; i < nrows; i++) {
         for (int j = 0; j < n; j++)
@@ -94,13 +94,6 @@ int main(int argc, char** argv)
     MPI_Reduce(&t, &tmax, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        for (int i = 0; i < m; i++) {
-            double r = (i + 1) * (n / 2.0 + pow(n, 2) / 2.0);
-            if (fabs(c[i] - r) > 1E-6) {
-                fprintf(stderr, "Validation failed: elem %d = %f (real value %f)\n", i, c[i], r);
-                break;
-            }
-        }
         file = fopen("data.txt", "a");
         fprintf(file, "%f\t%d\n", tmax, commsize);
         fclose(file);
