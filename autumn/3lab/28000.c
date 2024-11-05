@@ -52,19 +52,15 @@ void dgemv(double* a, double* b, double* c, int m, int n)
             c[lb + i] += a[i * n + j] * b[j];
     }
 
-    if (rank == 0) {
-        int* displs = malloc(sizeof(*displs) * commsize);
-        int* rcounts = malloc(sizeof(*rcounts) * commsize);
-        for (int i = 0; i < commsize; i++) {
-            int l, u;
-            get_chunk(0, m - 1, commsize, i, &l, &u);
-            rcounts[i] = u - l + 1;
-            displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1] : 0;
-        }
-        MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    } else {
-        MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    int* displs = malloc(sizeof(*displs) * commsize);
+    int* rcounts = malloc(sizeof(*rcounts) * commsize);
+    for (int i = 0; i < commsize; i++) {
+        int l, u;
+        get_chunk(0, m - 1, commsize, i, &l, &u);
+        rcounts[i] = u - l + 1;
+        displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1] : 0;
     }
+    MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE, MPI_COMM_WORLD);
 }
 
 int main(int argc, char** argv)
@@ -75,6 +71,7 @@ int main(int argc, char** argv)
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    double t = MPI_Wtime();
 
     int lb, ub;
     get_chunk(0, m - 1, commsize, rank, &lb, &ub);
@@ -89,7 +86,6 @@ int main(int argc, char** argv)
     }
     for (int j = 0; j < n; j++)
         b[j] = j + 1;
-    double t = MPI_Wtime();
     dgemv(a, b, c, m, n);
     t = MPI_Wtime() - t;
 
@@ -105,7 +101,7 @@ int main(int argc, char** argv)
                 break;
             }
         }
-        file = fopen("28000.txt", "a");
+        file = fopen("data.txt", "a");
         fprintf(file, "%f\t%d\n", tmax, commsize);
         fclose(file);
     }
