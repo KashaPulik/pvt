@@ -10,7 +10,7 @@ times2 = []
 with open(input_file, 'r') as file:
     for i, line in enumerate(file):
         time, proc = map(float, line.split())
-        if i < 4: 
+        if i < 3: 
             times1.append(time)
             processes.append(int(proc)) 
         else: 
