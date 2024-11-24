@@ -1,0 +1,7 @@
+#!/bin/sh
+#SBATCH --nodes=2 --ntasks-per-node=8
+#SBATCH --job-name=laplas10000p16
+
+cd $SLURM_SUBMIT_DIR
+
+mpiexec ./app 10000 10000
